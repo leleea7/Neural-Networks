@@ -264,14 +264,8 @@ class MultiTaskRecognizer:
 
         self.__writer.close()
 
-        if 'gender' in self.__tasks:
-            pg.generate_accuracy_plot(data_dir=self.__TMP_DIR, label='gender', batch_size=self.__BATCH_SIZE)
-        if 'smile' in self.__tasks:
-            pg.generate_accuracy_plot(data_dir=self.__TMP_DIR, label='smile', batch_size=self.__BATCH_SIZE)
-        if 'glasses' in self.__tasks:
-            pg.generate_accuracy_plot(data_dir=self.__TMP_DIR, label='glasses', batch_size=self.__BATCH_SIZE)
-        if 'head_pose' in self.__tasks:
-            pg.generate_accuracy_plot(data_dir=self.__TMP_DIR, label='head pose', batch_size=self.__BATCH_SIZE)
+        for task in self.__tasks:
+            pg.generate_accuracy_plot(data_dir=self.__TMP_DIR, label=task, batch_size=self.__BATCH_SIZE)
 
         pg.generate_loss_plot(self.__TMP_DIR)
 
