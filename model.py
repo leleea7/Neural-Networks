@@ -135,7 +135,7 @@ class MultiTaskRecognizer:
             f_train = open(self.__DATA_DIR + 'training.txt', 'r')
 
             for step in tqdm.tqdm(range(num_steps), desc='Epoch ' + str(epoch + 1 + self.__GLOBAL_EPOCH) + '/' + str(epochs + self.__GLOBAL_EPOCH)):
-
+                
                 images = []
                 landmarks = []
                 gender = []
@@ -267,7 +267,7 @@ class MultiTaskRecognizer:
         for task in self.__tasks:
             pg.generate_accuracy_plot(data_dir=self.__TMP_DIR, label=task, batch_size=self.__BATCH_SIZE)
 
-        pg.generate_loss_plot(self.__TMP_DIR)
+        pg.generate_loss_plot(self.__TMP_DIR, batch_size=self.__BATCH_SIZE)
 
     def __create_feed_dict__(self, img, inputs):
         feed_dict = {}

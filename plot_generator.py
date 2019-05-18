@@ -1,17 +1,16 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def generate_loss_plot(data_dir=''):
+def generate_loss_plot(data_dir='', batch_size=32):
     loss = []
     f = open(data_dir + 'log_loss.txt', 'r', encoding='utf8')
     for line in f.readlines():
-        line = line.split()[4]
         loss.append(float(line))
     plt.figure(figsize=(13, 13))
     plt.title('Loss plot')
-    plt.xlabel('Epochs')
+    plt.xlabel('Iterations')
     plt.ylabel('Loss')
-    plt.plot([(i + 1) for i in range(len(loss))], loss)
+    plt.plot([(i + 1) * batch_size for i in range(len(loss))], loss)
     plt.savefig(data_dir + 'loss.png')
 
 def generate_accuracy_plot(data_dir='', label='', batch_size=32):
