@@ -20,6 +20,10 @@ def TCDCN(images, tasks):
     layer = tf.keras.layers.Dense(100)(layer)
     layer = tf.keras.layers.Activation('relu')(layer)
 
+    if 'landmarks' in tasks:
+        output_landmarks = tf.keras.layers.Dense(10)(layer)
+    else:
+        output_landmarks = None
     if 'gender' in tasks:
         output_gender = tf.keras.layers.Dense(2)(layer)
     else:
@@ -37,7 +41,7 @@ def TCDCN(images, tasks):
     else:
         output_head_pose = None
 
-    return output_gender, output_smile, output_glasses, output_head_pose
+    return output_landmarks, output_gender, output_smile, output_glasses, output_head_pose
 
 
 def Xception(images, num_classes_gender, num_classes_smile, num_classes_glasses, num_classes_head_pose):

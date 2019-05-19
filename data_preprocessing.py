@@ -19,7 +19,9 @@ def global_epoch(file_path, update=None):
         f.close()
 
 def load_image(img_dir, shape, mode='L'):
-    img = Image.open(img_dir).convert(mode).resize(shape, Image.LANCZOS)
+    img = Image.open(img_dir).convert(mode)
+    size = img.size
+    img = img.resize(shape, Image.LANCZOS)
     img = np.asarray(img)
     img = img.astype('float32')
     '''img = img / 255.0
@@ -27,4 +29,4 @@ def load_image(img_dir, shape, mode='L'):
     img = img * 2.0'''
     if mode == 'L':
         img = np.expand_dims(img, axis=-1)
-    return img
+    return img, size

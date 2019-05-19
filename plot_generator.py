@@ -13,18 +13,18 @@ def generate_loss_plot(data_dir='', batch_size=32):
     plt.plot([(i + 1) * batch_size for i in range(len(loss))], loss)
     plt.savefig(data_dir + 'loss.png')
 
-def generate_accuracy_plot(data_dir='', label='', batch_size=32):
+def generate_plot(data_dir='', mode='accuracy', label='', batch_size=32):
     label = label.strip().lower()
     accuracy = []
     f = open(data_dir + 'log_' + label + '.txt', 'r', encoding='utf8')
     for line in f.readlines():
-        accuracy.append(float(line) * 100)
+        accuracy.append(float(line) * 100) if mode =='accuracy' else accuracy.append(float(line))
     plt.figure(figsize=(13, 13))
-    plt.title('Accuracy plot' + ' (' + label + ')')
+    plt.title(mode.capitalize() + ' plot' + ' (' + label + ')') if mode =='accuracy' else plt.title(mode.upper() + ' plot' + ' (' + label + ')')
     plt.xlabel('Iterations')
-    plt.ylabel('Accuracy')
+    plt.ylabel(mode.capitalize()) if mode =='accuracy' else plt.ylabel(mode.upper())
     plt.plot([(i + 1) * batch_size for i in range(len(accuracy))], accuracy)
-    plt.savefig(data_dir + 'accuracy_' + label + '.png')
+    plt.savefig(data_dir + mode + '_' + label + '.png')
 
 def generate_confusion_matrix_plot(conf_mat, classes, normalize=False, title='', data_dir=''):
     if not title:
