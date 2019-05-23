@@ -1,6 +1,45 @@
 import tensorflow as tf
 
+def TCDCNv2(images, tasks):
+    output = {}
+    # shape(images) = (60, 60, 1)
+
+    layer = tf.keras.layers.Conv2D(20, (5, 5), padding='same')(images)
+    # shape(layer) = (56, 56, 20)
+    layer = tf.keras.layers.Activation('relu')(layer)
+    layer = tf.keras.layers.MaxPool2D((2, 2), strides=1)(layer)
+    # shape(layer) = (28, 28, 20)
+
+    layer = tf.keras.layers.Conv2D(48, (5, 5), padding='same')(layer)
+    # shape(layer) = (24, 24, 48)
+    layer = tf.keras.layers.Activation('relu')(layer)
+    layer = tf.keras.layers.MaxPool2D((2, 2), strides=1)(layer)
+    # shape(layer) = (12, 12, 48)
+
+    layer = tf.keras.layers.Conv2D(64, (3, 3), padding='same')(layer)
+    # shape(layer) = (10, 10, 64)
+    layer = tf.keras.layers.Activation('relu')(layer)
+    layer = tf.keras.layers.MaxPool2D((2, 2), strides=1)(layer)
+    # shape(layer) = (5, 5, 64)
+
+    layer = tf.keras.layers.Conv2D(80, (3, 3), padding='same')(layer)
+    # shape(layer) = (3, 3, 80)
+    layer = tf.keras.layers.Activation('relu')(layer)
+
+    layer = tf.keras.layers.Flatten()(layer)
+    layer = tf.keras.layers.Dense(256)(layer)
+
+    for task in tasks:
+        if task == 'Landmarks':
+            output[task] = tf.keras.layers.Dense(10)(layer)
+        else:
+            output[task] = tf.keras.layers.Dense(2)(layer)
+
+    return output
+
+
 def TCDCN(images, tasks):
+    output = {}
     layer = tf.keras.layers.Conv2D(16, (5, 5), padding='same')(images)
     layer = tf.keras.layers.Activation('relu')(layer)
     layer = tf.keras.layers.MaxPool2D((2, 2), strides=2)(layer)
@@ -20,7 +59,7 @@ def TCDCN(images, tasks):
     layer = tf.keras.layers.Dense(100)(layer)
     layer = tf.keras.layers.Activation('relu')(layer)
 
-    if 'landmarks' in tasks:
+    '''if 'landmarks' in tasks:
         output_landmarks = tf.keras.layers.Dense(10)(layer)
     else:
         output_landmarks = None
@@ -39,9 +78,15 @@ def TCDCN(images, tasks):
     if 'head_pose' in tasks:
         output_head_pose = tf.keras.layers.Dense(5)(layer)
     else:
-        output_head_pose = None
+        output_head_pose = None'''
 
-    return output_landmarks, output_gender, output_smile, output_glasses, output_head_pose
+    for task in tasks:
+        if task == 'Landmarks':
+            output[task] = tf.keras.layers.Dense(10)(layer)
+        else:
+            output[task] = tf.keras.layers.Dense(2)(layer)
+
+    return output
 
 
 def Xception(images, num_classes_gender, num_classes_smile, num_classes_glasses, num_classes_head_pose):

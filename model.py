@@ -55,8 +55,8 @@ class MultiTaskRecognizer:
 
             if 'landmarks' in self.__tasks:
                 with tf.name_scope('loss_landmarks'):
-                    #Root Mean Squared Error (RMSE)
-                    self.__loss_landmarks = tf.sqrt(tf.reduce_mean(tf.square(tf.subtract(output_landmarks, self.__inp['landmarks']))))
+                    # Root Mean Squared Error (RMSE)
+                    self.__loss_landmarks = tf.sqrt(tf.reduce_mean(tf.square(tf.subtract(self.__inp['landmarks'], output_landmarks))))
             else:
                 self.__loss_landmarks = 0
 
@@ -211,7 +211,7 @@ class MultiTaskRecognizer:
                         hp = int(row[14]) - 1
 
                         pred = self.__session.run([self.__out[k] for k in self.__tasks if k],
-                                                    feed_dict=self.__create_feed_dict([img], [[land], [gend], [sm], [glass], [hp]]),
+                                                    feed_dict={self.__images: [img]},
                                                     run_metadata=run_metadata)
 
                         k = 0
@@ -289,11 +289,13 @@ class MultiTaskRecognizer:
 
         for task in self.__tasks:
             if task == 'landmarks':
-                pg.generate_plot(data_dir=self.__TMP_DIR, mode='rmse', label=task, batch_size=self.__BATCH_SIZE)
+                pg.generate_plot(data_dir=self.__TMP_DIR, mode='rmse', label=task, step=self.__BATCH_SIZE)
             else:
-                pg.generate_plot(data_dir=self.__TMP_DIR, label=task, batch_size=self.__BATCH_SIZE)
+                pg.generate_plot(data_dir=self.__TMP_DIR, label=task, step=self.__BATCH_SIZE)
 
-        pg.generate_loss_plot(self.__TMP_DIR, batch_size=self.__BATCH_SIZE)
+        pg.generate_loss_plot(self.__TMP_DIR, step=self.__BATCH_SIZE)
+        conf_mat = ev.confusion_matrix(y_true_head_pose, y_pred_head_pose, self.__len_head_pose)
+        pg.generate_confusion_matrix_plot(conf_mat, ['Left profile', 'Left', 'Frontal', 'Right', 'Right profile'], data_dir=self.__TMP_DIR)
 
     def __create_feed_dict(self, img, inputs):
         feed_dict = {}
@@ -302,6 +304,14 @@ class MultiTaskRecognizer:
             if key in self.__tasks:
                 feed_dict[self.__inp[key]] = inputs[self.__position[key]]
         return feed_dict
+
+    def predict(self, img):
+        run_metadata = tf.RunMetadata()
+        pred = self.__session.run([self.__out[k] for k in self.__tasks if k],
+                                  feed_dict={self.__images: [img]},
+                                  run_metadata=run_metadata)
+        return pred
+
 
 a = MultiTaskRecognizer(tasks=['landmarks', 'glasses', 'smile', 'head_pose', 'gender'])
 a.train()

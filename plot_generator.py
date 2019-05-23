@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def generate_loss_plot(data_dir='', batch_size=32):
+def generate_loss_plot(data_dir='', step=32):
     loss = []
     f = open(data_dir + 'log_loss.txt', 'r', encoding='utf8')
     for line in f.readlines():
@@ -10,10 +10,10 @@ def generate_loss_plot(data_dir='', batch_size=32):
     plt.title('Loss plot')
     plt.xlabel('Iterations')
     plt.ylabel('Loss')
-    plt.plot([(i + 1) * batch_size for i in range(len(loss))], loss)
+    plt.plot([(i + 1) * step for i in range(len(loss))], loss)
     plt.savefig(data_dir + 'loss.png')
 
-def generate_plot(data_dir='', mode='accuracy', label='', batch_size=32):
+def generate_plot(data_dir='', mode='accuracy', label='', step=32):
     label = label.strip().lower()
     accuracy = []
     f = open(data_dir + 'log_' + label + '.txt', 'r', encoding='utf8')
@@ -23,7 +23,7 @@ def generate_plot(data_dir='', mode='accuracy', label='', batch_size=32):
     plt.title(mode.capitalize() + ' plot' + ' (' + label + ')') if mode =='accuracy' else plt.title(mode.upper() + ' plot' + ' (' + label + ')')
     plt.xlabel('Iterations')
     plt.ylabel(mode.capitalize()) if mode =='accuracy' else plt.ylabel(mode.upper())
-    plt.plot([(i + 1) * batch_size for i in range(len(accuracy))], accuracy)
+    plt.plot([(i + 1) * step for i in range(len(accuracy))], accuracy)
     plt.savefig(data_dir + mode + '_' + label + '.png')
 
 def generate_confusion_matrix_plot(conf_mat, classes, normalize=False, title='', data_dir=''):
