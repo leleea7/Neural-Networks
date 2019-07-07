@@ -1,17 +1,17 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def generate_loss_plot(data_dir='', step=32):
+def generate_loss_plot(task,data_dir='', step=32):
     loss = []
-    f = open(data_dir + 'log_loss.txt', 'r', encoding='utf8')
+    f = open(data_dir + 'log_loss_' + task +'.txt', 'r', encoding='utf8')
     for line in f.readlines():
         loss.append(float(line))
     plt.figure(figsize=(13, 13))
-    plt.title('Loss plot')
+    plt.title('Loss -  ' + task if task != 'total_loss' else 'Total Loss')
     plt.xlabel('Iterations')
     plt.ylabel('Loss')
     plt.plot([(i + 1) * step for i in range(len(loss))], loss)
-    plt.savefig(data_dir + 'loss.png')
+    plt.savefig(data_dir + 'loss_' + task + '.png')
 
 def generate_error_plot(y_true, y_pred, data_dir=''):
     labels = ['Left eye', 'Right eye', 'Nose', 'Left mouth', 'Right mouth']
