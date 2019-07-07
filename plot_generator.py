@@ -13,6 +13,27 @@ def generate_loss_plot(data_dir='', step=32):
     plt.plot([(i + 1) * step for i in range(len(loss))], loss)
     plt.savefig(data_dir + 'loss.png')
 
+def generate_error_plot(y_true, y_pred, data_dir=''):
+    labels = ['Left eye', 'Right eye', 'Nose', 'Left mouth', 'Right mouth']
+    rmse = {}
+    i = 0
+    p = 0
+    while p < len(y_true[0]):
+        rmse[labels[i]] = np.sqrt(np.mean(np.square(y_true[:, p:p + 2] - y_pred[:, p:p + 2])))
+        p += 2
+        i += 1
+    plt.figure(figsize=(13, 13))
+    fig, ax = plt.subplots()
+    ax.barh(np.arange(len(labels)), np.array([rmse[key] for key in rmse]), align='center')
+    ax.set_yticks(np.arange(len(labels)))
+    ax.set_yticklabels(labels)
+    ax.invert_yaxis()
+    ax.set_xlabel('RMSE')
+    ax.set_title('RMSE of each landmarks')
+    fig.tight_layout()
+    plt.savefig(data_dir + 'rmse_grouped_landmarks.png')
+
+
 def generate_plot(data_dir='', mode='accuracy', label='', step=32):
     label = label.strip().lower()
     accuracy = []

@@ -3,7 +3,7 @@ import numpy as np
 import os
 import data_preprocessing as dp
 import tensorflow as tf
-from architecture import TCDCN
+from architecture import TCDCN, Xception
 import tqdm
 import evaluation as ev
 import plot_generator as pg
@@ -134,6 +134,8 @@ class MultiTaskRecognizer:
 
                 average_loss += l
 
+
+                # print loss and other metrics every 100 steps or when an epoch is finished
                 if (step % 100 == 0 and step > 0) or step == num_steps - 1:
                     y_true = {task: [] for task in self.__tasks}
                     y_pred = {task: [] for task in self.__tasks}
@@ -202,11 +204,11 @@ class MultiTaskRecognizer:
         for task in self.__tasks:
             if task == 'Landmarks':
                 pg.generate_plot(data_dir=self.__TMP_DIR, mode='rmse', label=task, step=100)
+                pg.generate_error_plot(np.array(y_true[task]), np.array(y_pred[task]), data_dir=self.__TMP_DIR)
             else:
                 pg.generate_plot(data_dir=self.__TMP_DIR, label=task, step=100)
 
-        pg.generate_loss_plot(self.__TMP_DIR, step=self.__BATCH_SIZE)
-
+        pg.generate_loss_plot(self.__TMP_DIR, step=100)
 
     def __create_feed_dict(self, img, landmarks, inputs):
         feed_dict = {}
@@ -221,7 +223,7 @@ class MultiTaskRecognizer:
     def predict(self, img):
         run_metadata = tf.RunMetadata()
         pred = self.__session.run([self.__out[k] for k in self.__tasks],
-                                  feed_dict={self.__images: [img]},
+                                  feed_dict={self.__images: img},
                                   run_metadata=run_metadata)
         output = {}
         k = 0
@@ -231,12 +233,4 @@ class MultiTaskRecognizer:
         return output
 
 '''a = MultiTaskRecognizer()
-a.train()'''
-
-
-
-
-
-
-
-
+a.train(epochs=4)'''

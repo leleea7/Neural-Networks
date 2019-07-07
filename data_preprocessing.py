@@ -1,5 +1,6 @@
 import numpy as np
 from PIL import Image
+import cv2
 
 def global_epoch(file_path, update=None):
     if not update:
@@ -30,3 +31,12 @@ def load_image(img_dir, shape, mode='L'):
     if mode == 'L':
         img = np.expand_dims(img, axis=-1)
     return img, size
+
+def load_image_with_face_detection(img_dir, shape, detector):
+    img = cv2.imread(img_dir, cv2.IMREAD_GRAYSCALE)
+    face = detector.detectMultiScale(img, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
+    x, y, w, h, = face[0]
+    img = img[y:y + h, x:x + w]
+    size = img.shape
+    img = cv2.resize(img, shape)
+    return np.expand_dims(img, axis=-1), size, (x, y)

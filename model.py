@@ -308,7 +308,7 @@ class MultiTaskRecognizer:
     def predict(self, img):
         run_metadata = tf.RunMetadata()
         pred = self.__session.run([self.__out[k] for k in self.__tasks if k],
-                                  feed_dict={self.__images: [img]},
+                                  feed_dict={self.__images: img},
                                   run_metadata=run_metadata)
         return pred
 

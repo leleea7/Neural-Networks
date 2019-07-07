@@ -17,7 +17,7 @@ for image in tqdm.tqdm(f_test, total=len(f_test)):
     image = image.strip()
     img = Image.open('MAFL/img_align_celeba/' + image)
 
-    landmarks = m.predict(np.expand_dims(np.asarray(img.convert('L').resize(standard_dims)), axis=-1))['Landmarks']
+    landmarks = m.predict([np.expand_dims(np.asarray(img.convert('L').resize(standard_dims)), axis=-1)])['Landmarks']
 
     x = landmarks[0][:5]
     y = landmarks[0][5:]
