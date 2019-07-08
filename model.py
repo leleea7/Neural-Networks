@@ -143,7 +143,7 @@ class MultiTaskRecognizer:
 
 
                 # print loss and other metrics every 100 steps or when an epoch is finished
-                if (step % 100 == 0) or step == num_steps - 1:
+                if (step % 100 == 0 and step > 0 ) or step == num_steps - 1:
                     y_true = {task: [] for task in self.__tasks}
                     y_pred = {task: [] for task in self.__tasks}
                     data = {}
