@@ -33,7 +33,6 @@ def generate_error_plot(y_true, y_pred, data_dir=''):
     fig.tight_layout()
     plt.savefig(data_dir + 'rmse_grouped_landmarks.png')
 
-
 def generate_plot(data_dir='', mode='accuracy', label='', step=32):
     label = label.strip().lower()
     accuracy = []
@@ -41,9 +40,9 @@ def generate_plot(data_dir='', mode='accuracy', label='', step=32):
     for line in f.readlines():
         accuracy.append(float(line) * 100) if mode =='accuracy' else accuracy.append(float(line))
     plt.figure(figsize=(13, 13))
-    plt.title(mode.capitalize() + ' plot' + ' (' + label + ')') if mode =='accuracy' else plt.title(mode.upper() + ' plot' + ' (' + label + ')')
+    plt.title(mode.capitalize() + ' plot' + ' (' + label + ')') if mode == 'accuracy' else plt.title(mode.upper() + ' plot' + ' (' + label + ')')
     plt.xlabel('Iterations')
-    plt.ylabel(mode.capitalize()) if mode =='accuracy' else plt.ylabel(mode.upper())
+    plt.ylabel(mode.capitalize()) if mode == 'accuracy' else plt.ylabel(mode.upper())
     plt.plot([(i + 1) * step for i in range(len(accuracy))], accuracy)
     plt.savefig(data_dir + mode + '_' + label + '.png')
 

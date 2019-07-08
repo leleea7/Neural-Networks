@@ -1,4 +1,3 @@
-import tensorflow as tf
 import numpy as np
 from PIL import Image
 import cv2
@@ -43,13 +42,13 @@ def load_image_with_face_detection(img_dir, shape, detector):
     img = cv2.resize(img, shape)
     return np.expand_dims(img, axis=-1), size, (x, y)
 
-def transformImage(img,x,y):
-    coordNuoveX = randint(-10,10)
-    coordNuoveY = randint(-10,10)
-    M = np.float32([[1,0,coordNuoveX], [0,1,coordNuoveY]])
+def transform_image(img, x, y):
+    coordNuoveX = randint(-10, 10)
+    coordNuoveY = randint(-10, 10)
+    M = np.float32([[1, 0, coordNuoveX], [0, 1, coordNuoveY]])
     (righe, colonne) = img.shape[:2]
-    res = cv2.warpAffine(img,M,(colonne,righe))
+    res = cv2.warpAffine(img, M, (colonne, righe))
     x = x + coordNuoveX
     y = y + coordNuoveY
-    return res, x,y
+    return res, x, y
 
