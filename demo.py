@@ -1,7 +1,7 @@
 from PIL import Image
 import os
 import numpy as np
-from model2 import MultiTaskRecognizer
+from model import MultiTaskRecognizer
 import matplotlib.pyplot as plt
 import tqdm
 
