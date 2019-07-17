@@ -242,5 +242,5 @@ class MultiTaskRecognizer:
             k += 1
         return output
 
-a = MultiTaskRecognizer()
-a.train(epochs=4)
+#a = MultiTaskRecognizer()
+#a.train(epochs=4)
