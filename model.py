@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import os
 import data_preprocessing as dp
-from architecture import TCDCN, Xception
+from architecture import TCDCN
 import tqdm
 import evaluation as ev
 import plot_generator as pg
@@ -46,6 +46,8 @@ class MultiTaskRecognizer:
                     self.__inp[task] = tf.placeholder(tf.int32, shape=[None])
 
             output = TCDCN(self.__images, self.__tasks)
+
+
  
             for task in self.__tasks:
                 if task == 'Landmarks':
@@ -95,9 +97,11 @@ class MultiTaskRecognizer:
         attributes = pd.read_csv(self.__DATA_DIR + 'list_attr_celeba.csv')
         landmarks = pd.read_csv(self.__DATA_DIR + 'list_landmarks_align_celeba.csv')
 
+
         for epoch in range(epochs):
-            loss = {task: 0 for task in self.__tasks + ['total_loss']}
+            loss = {task: 0 for task in self.__tasks+['total_loss']}
             f_train = open(self.__DATA_DIR + 'training.txt', 'r')
+
 
             for step in tqdm.tqdm(range(num_steps), desc='Epoch ' + str(epoch + 1 + self.__GLOBAL_EPOCH) + '/' + str(epochs + self.__GLOBAL_EPOCH)):
 
@@ -118,7 +122,7 @@ class MultiTaskRecognizer:
                     l = np.array(landmarks[landmarks['image_id'] == row])[0][1:]
                     x = np.array([l[i] for i in range(0, len(l), 2)]) * self.__shape[0] / size[0]
                     y = np.array([l[i] for i in range(1, len(l), 2)]) * self.__shape[1] / size[1]
-                    img, x, y = dp.transform_image(img, x, y)
+                    img, x, y = dp.transformImage(img,x,y)
                     img = np.expand_dims(img, axis=-1)
                     land = np.concatenate([x, y])
                     images.append(img)
@@ -133,12 +137,12 @@ class MultiTaskRecognizer:
                                           feed_dict=self.__create_feed_dict(images, lands, data),
                                           run_metadata=run_metadata)
                 for i in range(2,len(l)):
-                    loss[self.__tasks[i - 2]] += l[i]
+                    loss[self.__tasks[i-2]] += l[i]
                 loss['total_loss'] += l[1]
 
 
                 # print loss and other metrics every 100 steps or when an epoch is finished
-                if (step % 100 == 0 and step > 0) or step == num_steps - 1:
+                if (step % 100 == 0 and step > 0 ) or step == num_steps - 1:
                     y_true = {task: [] for task in self.__tasks}
                     y_pred = {task: [] for task in self.__tasks}
                     data = {}
@@ -152,8 +156,8 @@ class MultiTaskRecognizer:
                         l = np.array(landmarks[landmarks['image_id'] == row])[0][1:]
                         x = np.array([l[i] for i in range(0, len(l), 2)]) * self.__shape[0] / size[0]
                         y = np.array([l[i] for i in range(1, len(l), 2)]) * self.__shape[1] / size[1]
-                        #img, x, y = dp.transform_image(img, x, y)
-                        #img = np.expand_dims(img, axis=-1)
+                        img,x,y = dp.transformImage(img,x,y)
+                        img = np.expand_dims(img, axis=-1)
                         land = np.concatenate([x, y])
                         pred = self.__session.run([self.__out[task] for task in self.__tasks],
                                                   feed_dict={self.__images: [img]},
@@ -214,7 +218,7 @@ class MultiTaskRecognizer:
                 pg.generate_plot(data_dir=self.__TMP_DIR, label=task, step=100)
             
         for task in self.__tasks + ['total_loss']:
-            pg.generate_loss_plot(task, self.__TMP_DIR, step=100)
+            pg.generate_loss_plot(task,self.__TMP_DIR, step=100)
 
     def __create_feed_dict(self, img, landmarks, inputs):
         feed_dict = {}
