@@ -156,7 +156,7 @@ class MultiTaskRecognizer:
                         l = np.array(landmarks[landmarks['image_id'] == row])[0][1:]
                         x = np.array([l[i] for i in range(0, len(l), 2)]) * self.__shape[0] / size[0]
                         y = np.array([l[i] for i in range(1, len(l), 2)]) * self.__shape[1] / size[1]
-                        img,x,y = dp.transformImage(img,x,y)
+                        img, x, y = dp.transform_image(img, x, y)
                         img = np.expand_dims(img, axis=-1)
                         land = np.concatenate([x, y])
                         pred = self.__session.run([self.__out[task] for task in self.__tasks],
